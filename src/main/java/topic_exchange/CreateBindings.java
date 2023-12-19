@@ -1,4 +1,4 @@
-package org.javaserabbitmq;
+package topic_exchange;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -7,7 +7,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-public class TestPublisher {
+public class CreateBindings {
     public static void main(String[] args) {
 
         ConnectionFactory factory = new ConnectionFactory();
@@ -17,18 +17,14 @@ public class TestPublisher {
         try {
             connection = factory.newConnection(CommonConfigs.AMQP_URL);
             channel = connection.createChannel();
-            String message = "Turn on home appliances";
-            channel.basicPublish("my-first-exchange","homeAppliance", null, message.getBytes());
-
+            channel.queueBind("HealthQ", "my-topic-exchange","health.*");
+            channel.queueBind("SportsQ", "my-topic-exchange","#.sports.*");
+            channel.queueBind("EducationQ", "my-topic-exchange", "#.education");
             channel.close();
-            connection.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (TimeoutException e) {
             throw new RuntimeException(e);
         }
     }
-
-
-
 }

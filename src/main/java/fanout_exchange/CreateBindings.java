@@ -1,4 +1,4 @@
-package basic_example;
+package fanout_exchange;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -7,9 +7,9 @@ import com.rabbitmq.client.ConnectionFactory;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-public class MessagePublisher {
+public class CreateBindings {
+    public static void main(String[] args) {
 
-    public static void main(String[] args) throws Exception{
         ConnectionFactory factory = new ConnectionFactory();
         Connection connection;
         Channel channel;
@@ -17,13 +17,10 @@ public class MessagePublisher {
         try {
             connection = factory.newConnection(CommonConfigs.AMQP_URL);
             channel = connection.createChannel();
-            for(int i = 0; i < 4; i++)
-            {
-                String message = "Getting started with rabbitMQ - Msg" + i;
-                channel.basicPublish("", CommonConfigs.DEFAULT_QUEUE, null,message.getBytes());
-            }
+            channel.queueBind("MobileQ", "my-fanout-exchange","");
+            channel.queueBind("ACQ", "my-fanout-exchange","");
+            channel.queueBind("LightQ", "my-fanout-exchange", "");
             channel.close();
-            connection.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (TimeoutException e) {

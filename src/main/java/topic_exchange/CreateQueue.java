@@ -1,4 +1,4 @@
-package basic_example;
+package topic_exchange;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -7,9 +7,10 @@ import com.rabbitmq.client.ConnectionFactory;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-public class MessagePublisher {
+public class CreateQueue {
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) {
+
         ConnectionFactory factory = new ConnectionFactory();
         Connection connection;
         Channel channel;
@@ -17,11 +18,9 @@ public class MessagePublisher {
         try {
             connection = factory.newConnection(CommonConfigs.AMQP_URL);
             channel = connection.createChannel();
-            for(int i = 0; i < 4; i++)
-            {
-                String message = "Getting started with rabbitMQ - Msg" + i;
-                channel.basicPublish("", CommonConfigs.DEFAULT_QUEUE, null,message.getBytes());
-            }
+            channel.queueDeclare("HealthQ", true,false,false,null);
+            channel.queueDeclare("SportsQ",true,false,false,null);
+            channel.queueDeclare("EducationQ", true,false,false,null);
             channel.close();
             connection.close();
         } catch (IOException e) {
@@ -29,5 +28,9 @@ public class MessagePublisher {
         } catch (TimeoutException e) {
             throw new RuntimeException(e);
         }
+
+
     }
 }
+
+

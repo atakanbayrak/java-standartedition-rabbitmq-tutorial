@@ -1,4 +1,4 @@
-package org.javaserabbitmq;
+package direct_exchange;
 
 import com.rabbitmq.client.*;
 
