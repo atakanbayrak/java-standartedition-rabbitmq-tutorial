@@ -1,4 +1,4 @@
-package direct_exchange;
+package exchange_to_exchange;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -7,7 +7,8 @@ import com.rabbitmq.client.ConnectionFactory;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-public class CreateBindings {
+public class CreateQueue {
+
     public static void main(String[] args) {
 
         ConnectionFactory factory = new ConnectionFactory();
@@ -17,14 +18,24 @@ public class CreateBindings {
         try {
             connection = factory.newConnection(CommonConfigs.AMQP_URL);
             channel = connection.createChannel();
-            channel.queueBind("MobileQ", "my-direct-exchange", "personalDevice");
-            channel.queueBind("ACQ", "my-direct-exchange", "homeAppliance");
-            channel.queueBind("LightQ", "my-direct-exchange", "homeAppliance");
+
+            channel.queueDeclare("MobileQ", true,false,false,null);
+            channel.queueDeclare("ACQ",true,false,false,null);
+            channel.queueDeclare("LightQ", true,false,false,null);
+
+            channel.queueDeclare("FanQ", true,false,false,null);
+            channel.queueDeclare("LaptopQ", true,false,false,null);
+
             channel.close();
+            connection.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (TimeoutException e) {
             throw new RuntimeException(e);
         }
+
+
     }
 }
+
+

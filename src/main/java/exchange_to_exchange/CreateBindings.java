@@ -1,4 +1,4 @@
-package direct_exchange;
+package exchange_to_exchange;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -17,10 +17,19 @@ public class CreateBindings {
         try {
             connection = factory.newConnection(CommonConfigs.AMQP_URL);
             channel = connection.createChannel();
-            channel.queueBind("MobileQ", "my-direct-exchange", "personalDevice");
-            channel.queueBind("ACQ", "my-direct-exchange", "homeAppliance");
-            channel.queueBind("LightQ", "my-direct-exchange", "homeAppliance");
+
+            channel.queueBind("MobileQ", "linked-direct-exchange", "personalDevice");
+            channel.queueBind("ACQ", "linked-direct-exchange", "homeAppliance");
+            channel.queueBind("LightQ", "linked-direct-exchange", "homeAppliance");
+
+            channel.queueBind("FanQ", "home-direct-exchange","homeAppliance");
+            channel.queueBind("LaptopQ", "home-direct-exchange","personalDevice");
+
+            //Destination Exchange - Source Exchange - Exchange Key
+            channel.exchangeBind("linked-direct-exchange","home-direct-exchange","homeAppliance");
+
             channel.close();
+            connection.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (TimeoutException e) {
