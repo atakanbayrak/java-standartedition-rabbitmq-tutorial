@@ -1,5 +1,6 @@
-package org.javaserabbitmq;
+package basic_example;
 import com.rabbitmq.client.*;
+import org.javaserabbitmq.CommonConfigs;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
